@@ -6,38 +6,37 @@ import android.util.Log
 import androidx.databinding.DataBindingUtil
 import com.example.retrofit.Network.RetrofitBuilder
 import com.example.retrofit.Network.UserInfo
+import com.example.retrofit.Network.UserInfo2
 import com.example.retrofit.databinding.ActivityMainBinding
 import retrofit2.Call
 import retrofit2.Response
 import javax.security.auth.callback.Callback
 
 class MainActivity : AppCompatActivity() {
-    lateinit var binding : ActivityMainBinding
+    val mbinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     val TAG: String = "로그"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(mbinding.root)
 
-        binding = DataBindingUtil.setContentView<ActivityMainBinding>(this,R.layout.activity_main)
+        mbinding.btn.setOnClickListener {
+            RetrofitBuilder.api.getUserInfo().enqueue(object : retrofit2.Callback<UserInfo2> {
+                override fun onResponse(call: Call<UserInfo2>, response: Response<UserInfo2>) {
+                    val useinfo = response.body()!!
+                    Log.d(TAG, "onResponse: 유저아이디: ${useinfo?.login}, 팔로워: ${useinfo?.followers}, 팔로잉: ${useinfo?.following} ")
 
-        RetrofitBuilder.api.getUserInfo().enqueue(object : retrofit2.Callback<UserInfo> {
+                }
 
-            override fun onResponse(call: Call<UserInfo>, response: Response<UserInfo>) {
-                val userinfo = response.body()!!
-                binding.login.setText(userinfo?.userId.toString())
-                binding.following.setText(userinfo?.following.toString())
-                binding.followers.setText(userinfo?.followers.toString())
-                Log.d(TAG, "onResponse: 유저아이디: ${userinfo?.userId}, 팔로워: ${userinfo?.followers}, 팔로잉: ${userinfo?.following} ")
-            }
+                override fun onFailure(call: Call<UserInfo2>, t: Throwable) {
+                    Log.d("error", t.message.toString())
+                }
 
-            override fun onFailure(call: Call<UserInfo>, t: Throwable) {
-                Log.d("error", t.message.toString())
-            }
+            })
 
-        })
-
-
-
+        }
     }
+
 }
+
+
 
