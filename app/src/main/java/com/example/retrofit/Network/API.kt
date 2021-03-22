@@ -8,6 +8,6 @@ interface API {
     @GET("users/daeyeong1573")// baseUrl +   "users/유저아이디"
     fun getUserInfo(
 
-    ): retrofit2.Call<UserInfo2>
+    ): retrofit2.Call<UserInfo>
 
 }

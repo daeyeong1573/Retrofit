@@ -7,7 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitBuilder {
-    lateinit var api: API
+     var api: API
 
     init {
         val retrofit = Retrofit.Builder()
